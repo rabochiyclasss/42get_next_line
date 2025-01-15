@@ -31,15 +31,16 @@ static void	get_line(char *pointing, char **line)
 {
 	char	*temp;
 	size_t	index;
-	int		next_line;
 	
 	index = 0;
+	if (!pointing || !pointing[index])
+		return ;
 	while (pointing[index] && pointing[index] != '\n')
 		index++;
 	temp = ft_substr(pointing, 0, index + (pointing[index] == '\n'));
 	if (temp)
 	{
-		*line = (char *)malloc(sizeof(char) * ft_strlen(temp) + 1);
+		*line = malloc(sizeof(char) * (ft_strlen(temp) + 1));
 		if (!*line)
 		{
 			free(temp);
@@ -55,7 +56,7 @@ static void	next_pointer(char **pointing, char *line)
 	char	*temp;
 
 	temp = NULL;
-	if (*pointing || line)
+	if (*pointing && line)
 		temp = ft_strdup(*pointing + ft_strlen(line));
 	free(*pointing);
 	*pointing = temp;
@@ -70,11 +71,9 @@ char	*get_next_line(int fd)
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if(!pointing)
-	{
+	if (!pointing)
 		pointing = ft_strdup("");// зачем так если можно просто pointing = NULL;
-	}
-	buff = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	buff = malloc(sizeof(char) * BUFFER_SIZE + 1);
 	if (!buff)
 		return (free(pointing), pointing = NULL, NULL);
 	read_from_fd(fd, &pointing, buff);
